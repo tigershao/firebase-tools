@@ -20,7 +20,7 @@
     "lint:other": "prettier --check '**/*.{md,yaml,yml}'",
     "lint:quiet": "npm run lint:ts -- --quiet && npm run lint:other",
     "lint:ts": "eslint --config .eslintrc.js --ext .ts,.js .",
-    "mocha": "npm run build:tests && mocha 'lib/test/**/*.{ts,js}'",
+    "mocha": "npm run build:tests && nyc mocha 'lib/test/**/*.{ts,js}'",
     "prepare": "npm run clean && npm run build -- --build tsconfig.publish.json",
     "test": "npm run lint:quiet && npm run mocha",
     "test:client-integration": "./scripts/client-integration-tests/run.sh",
@@ -62,15 +62,8 @@
     "registry": "https://wombat-dressing-room.appspot.com"
   },
   "nyc": {
-    "require": [
-      "ts-node/register"
-    ],
-    "extension": [
-      ".js",
-      ".ts"
-    ],
     "exclude": [
-      "src/test/**/*"
+      "**/test/**/*"
     ]
   },
   "dependencies": {
@@ -192,7 +185,6 @@
     "source-map-support": "^0.5.9",
     "supertest": "^3.3.0",
     "swagger2openapi": "^6.0.3",
-    "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
 }
