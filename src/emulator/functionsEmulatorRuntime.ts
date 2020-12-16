@@ -797,7 +797,7 @@ async function processHTTPS(frb: FunctionsRuntimeBundle, trigger: EmulatedTrigge
     return;
   }
 
-  await new Promise((resolveEphemeralServer, rejectEphemeralServer) => {
+  await new Promise<void>((resolveEphemeralServer, rejectEphemeralServer) => {
     const handler = async (req: express.Request, res: express.Response) => {
       try {
         logDebug(`Ephemeral server handling ${req.method} request`);

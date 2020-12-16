@@ -121,12 +121,12 @@ export class RuntimeWorker {
     this.runtime.events.on("log", listener);
   }
 
-  waitForDone(): Promise<any> {
+  waitForDone(): Promise<void> {
     if (this.state === RuntimeWorkerState.IDLE || this.state === RuntimeWorkerState.FINISHED) {
       return Promise.resolve();
     }
 
-    return new Promise((res) => {
+    return new Promise<void>((res) => {
       const listener = () => {
         this.stateEvents.removeListener(RuntimeWorkerState.IDLE, listener);
         this.stateEvents.removeListener(RuntimeWorkerState.FINISHED, listener);

@@ -470,7 +470,7 @@ describe("App management", () => {
       const expectedAppList = generateIosAppList(appCounts);
       const apiResponseAppList = expectedAppList.map((app) => {
         const iosApp = { ...app };
-        delete iosApp.platform;
+        iosApp.platform = (undefined as unknown) as AppPlatform.IOS;
         return iosApp;
       });
       apiRequestStub.onFirstCall().resolves({ body: { apps: apiResponseAppList } });
@@ -489,7 +489,7 @@ describe("App management", () => {
       const expectedAppList = generateAndroidAppList(appCounts);
       const apiResponseAppList = expectedAppList.map((app) => {
         const androidApps = { ...app };
-        delete androidApps.platform;
+        androidApps.platform = (undefined as unknown) as AppPlatform.ANDROID;
         return androidApps;
       });
       apiRequestStub.onFirstCall().resolves({ body: { apps: apiResponseAppList } });
@@ -508,7 +508,7 @@ describe("App management", () => {
       const expectedAppList = generateWebAppList(appCounts);
       const apiResponseAppList = expectedAppList.map((app) => {
         const webApp = { ...app };
-        delete webApp.platform;
+        webApp.platform = (undefined as unknown) as AppPlatform.WEB;
         return webApp;
       });
       apiRequestStub.onFirstCall().resolves({ body: { apps: apiResponseAppList } });

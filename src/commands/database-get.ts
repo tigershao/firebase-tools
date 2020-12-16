@@ -130,7 +130,7 @@ export default new Command("database:get <path>")
 
     res.body.pipe(outStream, { end: false });
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       // Tack on a single newline at the end of the stream.
       res.body.once("end", () => {
         if (outStream === process.stdout) {

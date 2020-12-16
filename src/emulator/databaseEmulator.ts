@@ -119,7 +119,7 @@ export class DatabaseEmulator implements EmulatorInstance {
     const readStream = fs.createReadStream(fPath);
     const { host, port } = this.getInfo();
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const req = http.request(
         {
           method: "PUT",
