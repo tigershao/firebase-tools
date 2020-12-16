@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:tests": "npm run clean && npm run build && cp -r src/test/fixtures lib/test/fixtures",
     "build:watch": "tsc --watch",
     "clean": "rimraf lib",
     "format": "npm run format:ts && npm run format:other",
@@ -19,7 +20,7 @@
     "lint:other": "prettier --check '**/*.{md,yaml,yml}'",
     "lint:quiet": "npm run lint:ts -- --quiet && npm run lint:other",
     "lint:ts": "eslint --config .eslintrc.js --ext .ts,.js .",
-    "mocha": "nyc mocha 'src/test/**/*.{ts,js}'",
+    "mocha": "npm run build:tests && mocha 'lib/test/**/*.{ts,js}'",
     "prepare": "npm run clean && npm run build -- --build tsconfig.publish.json",
     "test": "npm run lint:quiet && npm run mocha",
     "test:client-integration": "./scripts/client-integration-tests/run.sh",
@@ -191,7 +192,7 @@
     "source-map-support": "^0.5.9",
     "supertest": "^3.3.0",
     "swagger2openapi": "^6.0.3",
-    "ts-node": "^7.0.1",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
 }
