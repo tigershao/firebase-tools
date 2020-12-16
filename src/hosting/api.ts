@@ -109,8 +109,145 @@ enum VersionStatus {
   CLONING = "CLONING",
 }
 
-// TODO: define ServingConfig.
-enum ServingConfig {}
+// The user-supplied glob to match against the request URL path.
+type GlobMatcherPattern = { glob?: string };
+
+// The user-supplied RE2 regular expression to match against the request URL path.
+type RegexMatcherPattern = { regex?: string };
+
+export type MatcherPattern = GlobMatcherPattern | RegexMatcherPattern;
+
+// A header is an object that specifies
+// a URL pattern that, if matched to the request URL path, triggers Hosting to
+// apply the specified custom response headers.
+export type Header = MatcherPattern & {
+  // The additional headers to add to the response.
+  headers: { [key: string]: string };
+};
+
+// A [`redirect`](/docs/hosting/full-config#redirects) object specifies a URL
+// pattern that, if matched to the request URL path, triggers Hosting to
+// respond with a redirect to the specified destination path.
+export type Redirect = MatcherPattern & {
+  // The status HTTP code to return in the response. It must be a
+  // valid 3xx status code.
+  statusCode?: number;
+
+  // The value to put in the HTTP location header of the response.
+  // The location can contain capture group values from the pattern using
+  // a `:` prefix to identify the segment and an optional `*` to capture the
+  // rest of the URL.
+  // For example:
+  //   "glob": "/:capture*",
+  //   "statusCode": 301,
+  //   "location": "https://example.com/foo/:capture"
+  location: string;
+};
+
+// A [`rewrite`](/docs/hosting/full-config#rewrites) object specifies a URL
+// pattern that, if matched to the request URL path, triggers Hosting to
+// respond as if the service were given the specified destination URL.
+export type Rewrite = PathRewrite | FunctionRewrite | DynamicLinksRewrite | CloudRunRewrite;
+
+// The URL path to rewrite the request to.
+export type PathRewrite = MatcherPattern & { path: string };
+
+// The function to proxy requests to. Must match the exported function
+// name exactly.
+export type FunctionRewrite = MatcherPattern & { function: string };
+
+// The request will be forwarded to Firebase Dynamic Links.
+export type DynamicLinksRewrite = MatcherPattern & { dynamicLinks: boolean };
+
+// The request will be forwarded to Cloud Run.
+export type CloudRunRewrite = MatcherPattern & { run: CloudRunRewriteDetails };
+
+// A configured rewrite that directs requests to a Cloud Run service. If the
+// Cloud Run service does not exist when setting or updating your Firebase
+// Hosting configuration, then the request fails. Any errors from the Cloud Run
+// service are passed to the end user (for example, if you delete a service, any
+// requests directed to that service receive a `404` error).
+type CloudRunRewriteDetails = {
+  // User-defined ID of the Cloud Run service.
+  serviceId: string;
+
+  // User-provided region where the Cloud Run service is hosted.
+  // Defaults to `us-central1` if not supplied.
+  region?: string;
+};
+
+// Defines whether a trailing slash should be added or removed from the
+// request URL path.
+export enum TrailingSlashBehavior {
+  // No behavior is specified.
+  // <br>Files are served at their exact location only, and trailing slashes
+  // are only added to directory indexes.
+  TRAILING_SLASH_BEHAVIOR_UNSPECIFIED = "TRAILING_SLASH_BEHAVIOR_UNSPECIFIED",
+
+  // Trailing slashes are _added_ to directory indexes as well as to any URL
+  // path not ending in a file extension.
+  ADD = "ADD",
+
+  // Trailing slashes are _removed_ from directory indexes as well as from any
+  // URL path not ending in a file extension.
+  REMOVE = "REMOVE",
+}
+
+// Determines how Firebase Hosting serves mobile app association metadata.
+// These files include:
+// * `/.well-known/apple-app-site-association` - for Universal Links in iOS
+//   >= 9.3
+// * `/apple-app-site-association` - for Universal Links iOS < 9.3
+// * `/.well-known/assetlinks.json` - for Android
+export enum AppAssociationBehavior {
+  // The app association files will be automatically created from the apps
+  // that exist in the Firebase project.
+  AUTO = "AUTO",
+
+  // No special handling of the app association files will occur, these paths
+  // will result in a 404 unless caught with a Rewrite.
+  NONE = "NONE",
+}
+
+// If provided, i18n rewrites are enabled.
+export interface I18nConfig {
+  // The user-supplied path where country and language specific
+  // content will be looked for within the public directory.
+  root: string;
+}
+
+// The configuration for how incoming requests to a site should be routed and
+// processed before serving content. The URL request paths are matched against
+// the specified URL patterns in the configuration, then Hosting applies the
+// applicable configuration according to a specific priority order.
+export interface ServingConfig {
+  // An array of objects, where each object specifies a URL pattern that, if
+  // matched to the request URL path, triggers Hosting to apply the specified
+  // custom response headers.
+  headers?: Header[];
+
+  // An array of objects (called redirect rules), where each rule specifies a
+  // URL pattern that, if matched to the request URL path, triggers Hosting to
+  // respond with a redirect to the specified destination path.
+  redirects?: Redirect[];
+
+  // An array of objects (called rewrite rules), where each rule specifies a URL
+  // pattern that, if matched to the request URL path, triggers Hosting to
+  // respond as if the service were given the specified destination URL.
+  rewrites?: Rewrite[];
+
+  // Defines whether to drop the file extension from uploaded files.
+  cleanUrls?: boolean;
+
+  // Defines how to handle a trailing slash in the URL path.
+  trailingSlashBehavior?: TrailingSlashBehavior;
+
+  // How to handle well known App Association files.
+  appAssociation?: AppAssociationBehavior;
+
+  // Defines i18n rewrite behavior.
+  i18n?: I18nConfig;
+}
 
 export interface Version {
   // The unique identifier for a version, in the format:

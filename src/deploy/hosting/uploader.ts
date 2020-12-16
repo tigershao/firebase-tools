@@ -40,8 +40,8 @@ export class Uploader {
   private files: string[];
   private fileCount: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private cache: { [key: string]: any };
-  private cacheNew: Map<unknown, unknown>;
+  private cache: hashcache.HashCache;
+  private cacheNew: hashcache.HashCache;
   private sizeMap: { [key: string]: number };
   private hashMap: { [key: string]: string };
   private pathMap: { [key: string]: string };
@@ -163,7 +163,7 @@ export class Uploader {
     const stats = fs.statSync(path.resolve(this.public, filePath));
     const mtime = stats.mtime.getTime();
     this.sizeMap[filePath] = stats.size;
-    const cached = this.cache[filePath];
+    const cached = this.cache.get(filePath);
     if (cached && cached.mtime === mtime) {
       this.cacheNew.set(filePath, cached);
       this.addHash(filePath, cached.hash);
