@@ -1,4 +1,4 @@
-import * as uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { FunctionsRuntimeInstance, InvokeRuntimeOpts } from "./functionsEmulator";
 import { EmulatorLog, Emulators, FunctionsExecutionMode } from "./types";
 import {
@@ -40,7 +40,7 @@ export class RuntimeWorker {
   private _state: RuntimeWorkerState = RuntimeWorkerState.IDLE;
 
   constructor(key: string, runtime: FunctionsRuntimeInstance) {
-    this.id = uuid.v4();
+    this.id = uuid();
     this.key = key;
     this.runtime = runtime;
 

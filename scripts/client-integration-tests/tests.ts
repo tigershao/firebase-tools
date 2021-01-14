@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { join } from "path";
 import { readFileSync, writeFileSync, unlinkSync } from "fs";
-import * as uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import * as tmp from "tmp";
 
 import firebase = require("../../src");

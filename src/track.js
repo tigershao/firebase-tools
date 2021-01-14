@@ -5,7 +5,7 @@ var ua = require("universal-analytics");
 var _ = require("lodash");
 var { configstore } = require("./configstore");
 var pkg = require("../package.json");
-var uuid = require("uuid");
+var uuid = require("uuid").v4;
 var logger = require("./logger");
 
 var anonId = configstore.get("analytics-uuid");

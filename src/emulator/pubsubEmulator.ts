@@ -1,4 +1,4 @@
-import * as uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { Message, PubSub, Subscription } from "@google-cloud/pubsub";
 
 import * as api from "../api";
@@ -138,7 +138,7 @@ export class PubsubEmulator implements EmulatorInstance {
     for (const trigger of topicTriggers) {
       const body = {
         context: {
-          eventId: uuid.v4(),
+          eventId: uuid(),
           resource: {
             service: "pubsub.googleapis.com",
             name: `projects/${this.args.projectId}/topics/${topicName}`,

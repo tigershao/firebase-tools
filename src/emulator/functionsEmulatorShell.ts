@@ -1,4 +1,4 @@
-import * as uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { FunctionsEmulator } from "./functionsEmulator";
 import {
   EmulatedTriggerDefinition,
@@ -61,7 +61,7 @@ export class FunctionsEmulatorShell implements FunctionsShellController {
     // TODO: We always use v1beta1 events for now, but we want to move
     //       to v1beta2 as soon as we can.
     const proto: LegacyEvent = {
-      eventId: uuid.v4(),
+      eventId: uuid(),
       timestamp: new Date().toISOString(),
       eventType,
       resource,
